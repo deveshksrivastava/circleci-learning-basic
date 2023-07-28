@@ -1,8 +1,5 @@
 # CircleCI configuration file
 version: 2.1
-
-
-
 commands:
   save_node_modules:
     steps:
@@ -18,8 +15,6 @@ commands:
         name: Restore Yarn Package Cache
         keys:
           - yarn-packages-{{ checksum "yarn.lock" }}  
-
-
 
 executors:
   node-executor:
