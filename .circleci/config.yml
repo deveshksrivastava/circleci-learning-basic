@@ -24,11 +24,20 @@ jobs:
     executor : node-executor
     steps:
       - checkout  
-      - run: node --version                
+      - run: node --version
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}                
       - run:                      # git clone <project-name>
           name: Install npm dependencies
           command: |              # install npm dependencies and install dependencies form package.json
-            npm install --save
+            npm install --frozen-lockfile --cache-folder ~/.cache/yarn
+      - save_cache:
+          name: Save Yarn Package Cache
+          key: yarn-packages-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
       - run:
           name: Run unit tests
           command: |              # (./node_modules/mocha/bin/mocha)calling mocha,(test/) look into test folder/  (--reporter mochawesome) create nice html page,and install mochawesome,(reportDir=test-results) genrate report on folder
