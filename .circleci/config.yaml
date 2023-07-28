@@ -1,24 +1,25 @@
 # CircleCI configuration file
 version: 2.1
-
 jobs:
-  # Job one with a unique name
-  say_hello:
+  run_tests:
     docker:
-     - image: cimg/base:2022.05
+      - image: circleci/node:10  # exector, docker/window/mac/linux/ubuntu
     steps:
-      - run: echo "Say hello to YAML!"
-  # Job two with a unique name
-  say_goodbye:
-    docker:
-     - image: cimg/base:2022.05
-    steps:
-      - run: echo "Say goodbye to YAML!"
+      - checkout                  # git clone <project-name>
+      - run:
+          name: Install npm dependencies
+          command: |              # install npm dependencies and install dependencies form package.json
+            npm install --save
+      - run:
+          name: Run unit tests
+          command: |              # (./node_modules/mocha/bin/mocha)calling mocha,(test/) look into test folder/  (--reporter mochawesome) create nice html page,and install mochawesome,(reportDir=test-results) genrate report on folder
+            ./node_modules/mocha/bin/mocha test/ --reporter mochawesome --reporter-options reportDir=test-results,reportFilename=test-results
+      - store_test_results:
+          path: test-results
+      - store_artfacts:
+          path: test-results
 
 workflows:
-  # Name of workflow
-  hello_and_goodbye:
-    # List of jobs that will run
+  build_tests:
     jobs:
-      - say_hello
-      - say_goodbye
+      - run_tests
