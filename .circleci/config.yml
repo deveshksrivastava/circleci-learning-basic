@@ -71,4 +71,5 @@ workflows:
       - deploy:
           requires:
             - run_tests
+            - retake-tests
         
