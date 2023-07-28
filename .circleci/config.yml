@@ -1,21 +1,24 @@
 # CircleCI configuration file
 version: 2.1
+
+executors:
+  node-executor:
+    docker: # exector, docker/window/mac/linux/ubuntu
+      - image: cimg/node:20.5.0  
+
 jobs:
   pre-build:
-    docker:
-      - image: cimg/node:20.5.0  # exector, docker/window/mac/linux/ubuntu
+    executor : node-executor
     steps:
       - checkout  
       - run: node --version
   build:
-    docker:
-      - image: cimg/node:20.5.0  # exector, docker/window/mac/linux/ubuntu
+    executor : node-executor
     steps:
       - checkout  
       - run: node --version 
   retake-tests:
-    docker:
-      - image: cimg/node:20.5.0  # exector, docker/window/mac/linux/ubuntu
+    executor : node-executor
     steps:
       - checkout  
       - run: node --version                
@@ -32,8 +35,7 @@ jobs:
       - store_artifacts:
           path: test-results
   run_tests:
-    docker:
-      - image: cimg/node:20.5.0  # exector, docker/window/mac/linux/ubuntu
+    executor : node-executor
     steps:
       - checkout  
       - run: node --version                
@@ -50,8 +52,7 @@ jobs:
       - store_artifacts:
           path: test-results
   deploy:
-    docker:
-      - image: cimg/node:20.5.0  # exector, docker/window/mac/linux/ubuntu
+    executor : node-executor
     steps:
       - checkout  
       - run: node --version 
