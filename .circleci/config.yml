@@ -1,6 +1,26 @@
 # CircleCI configuration file
 version: 2.1
 
+
+
+commands:
+  save_node_modules:
+    steps:
+      save_cache:
+        name: Save Yarn Package Cache
+        paths:
+          - ~/.cache/yarn 
+        key: yarn-packages-{{ checksum "yarn.lock" }}
+    
+  restore_node_modules:
+    steps:  
+      restore_cache:
+        name: Restore Yarn Package Cache
+        keys:
+          - yarn-packages-{{ checksum "yarn.lock" }}  
+
+
+
 executors:
   node-executor:
     docker: # exector, docker/window/mac/linux/ubuntu
@@ -25,19 +45,12 @@ jobs:
     steps:
       - checkout  
       - run: node --version
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}                
+      - restore_node_modules
       - run:                      # git clone <project-name>
           name: Install npm dependencies
           command: |              # install npm dependencies and install dependencies form package.json
             yarn --frozen-lockfile --cache-folder ~/.cache/npm
-      - save_cache:
-          name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
+      - save_node_modules
       - run:
           name: Run unit tests
           command: |              # (./node_modules/mocha/bin/mocha)calling mocha,(test/) look into test folder/  (--reporter mochawesome) create nice html page,and install mochawesome,(reportDir=test-results) genrate report on folder
@@ -55,10 +68,12 @@ jobs:
           name: Install npm dependencies
           command: |              # install npm dependencies and install dependencies form package.json
             yarn --frozen-lockfile --cache-folder ~/.cache/yarn
+      - restore_node_modules
       - run:
           name: Run unit tests
           command: |              # (./node_modules/mocha/bin/mocha)calling mocha,(test/) look into test folder/  (--reporter mochawesome) create nice html page,and install mochawesome,(reportDir=test-results) genrate report on folder
             ./node_modules/mocha/bin/mocha test/ --reporter mochawesome --reporter-options reportDir=test-results,reportFilename=test-results
+      - save_node_modules
       - store_test_results:
           path: test-results
       - store_artifacts:
