@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   run_tests:
     docker:
-      - image: circleci/node:10  # exector, docker/window/mac/linux/ubuntu
+      - image: cimg/node:20.5.0  # exector, docker/window/mac/linux/ubuntu
     steps:
       - checkout                  # git clone <project-name>
       - run:
