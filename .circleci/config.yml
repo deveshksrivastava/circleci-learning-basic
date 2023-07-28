@@ -8,7 +8,7 @@ commands:
         paths:
           - ~/.cache/yarn 
         key: yarn-packages-{{ checksum "yarn.lock" }}
-    
+
   restore_node_modules:
     steps:  
       restore_cache:
@@ -58,17 +58,17 @@ jobs:
     executor : node-executor
     steps:
       - checkout  
-      - run: node --version                
+      - run: node --version
+      - restore_node_modules                
       - run:                      # git clone <project-name>
           name: Install npm dependencies
           command: |              # install npm dependencies and install dependencies form package.json
             yarn --frozen-lockfile --cache-folder ~/.cache/yarn
-      - restore_node_modules
+      - save_node_modules
       - run:
           name: Run unit tests
-          command: |              # (./node_modules/mocha/bin/mocha)calling mocha,(test/) look into test folder/  (--reporter mochawesome) create nice html page,and install mochawesome,(reportDir=test-results) genrate report on folder
+          command: |     # (./node_modules/mocha/bin/mocha)calling mocha,(test/) look into test folder/  (--reporter mochawesome) create nice html page,and install mochawesome,(reportDir=test-results) genrate report on folder
             ./node_modules/mocha/bin/mocha test/ --reporter mochawesome --reporter-options reportDir=test-results,reportFilename=test-results
-      - save_node_modules
       - store_test_results:
           path: test-results
       - store_artifacts:
@@ -77,7 +77,8 @@ jobs:
     executor : node-executor
     steps:
       - checkout  
-      - run: node --version 
+      - run: node --version
+       
 workflows:
   build_test:
     jobs:
