@@ -1,6 +1,12 @@
 # CircleCI configuration file
 version: 2.1
 jobs:
+  pre-build:
+    docker:
+      - image: cimg/node:20.5.0  # exector, docker/window/mac/linux/ubuntu
+    steps:
+      - checkout  
+      - run: node --version
   build:
     docker:
       - image: cimg/node:20.5.0  # exector, docker/window/mac/linux/ubuntu
@@ -28,5 +34,11 @@ jobs:
 workflows:
   build_test:
     jobs:
-      - build
-      - run_tests
+      - pre-build
+      - build:
+          requires:
+            - pre-build
+      - run_tests:
+          requires:
+            - build
+        
