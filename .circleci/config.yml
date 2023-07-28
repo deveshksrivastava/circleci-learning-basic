@@ -13,6 +13,24 @@ jobs:
     steps:
       - checkout  
       - run: node --version 
+  retake-tests:
+    docker:
+      - image: cimg/node:20.5.0  # exector, docker/window/mac/linux/ubuntu
+    steps:
+      - checkout  
+      - run: node --version                
+      - run:                      # git clone <project-name>
+          name: Install npm dependencies
+          command: |              # install npm dependencies and install dependencies form package.json
+            npm install --save
+      - run:
+          name: Run unit tests
+          command: |              # (./node_modules/mocha/bin/mocha)calling mocha,(test/) look into test folder/  (--reporter mochawesome) create nice html page,and install mochawesome,(reportDir=test-results) genrate report on folder
+            ./node_modules/mocha/bin/mocha test/ --reporter mochawesome --reporter-options reportDir=test-results,reportFilename=test-results
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results
   run_tests:
     docker:
       - image: cimg/node:20.5.0  # exector, docker/window/mac/linux/ubuntu
@@ -45,6 +63,9 @@ workflows:
           requires:
             - pre-build
       - run_tests:
+          requires:
+            - build
+      - retake-tests:
           requires:
             - build
       - deploy:
