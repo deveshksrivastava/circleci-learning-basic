@@ -31,6 +31,12 @@ jobs:
           path: test-results
       - store_artifacts:
           path: test-results
+  deploy:
+    docker:
+      - image: cimg/node:20.5.0  # exector, docker/window/mac/linux/ubuntu
+    steps:
+      - checkout  
+      - run: node --version 
 workflows:
   build_test:
     jobs:
@@ -41,4 +47,7 @@ workflows:
       - run_tests:
           requires:
             - build
+      - deploy:
+          requires:
+            - run_tests
         
