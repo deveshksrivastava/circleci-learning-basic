@@ -1,12 +1,19 @@
 # CircleCI configuration file
 version: 2.1
 jobs:
+  build:
+    docker:
+      - image: cimg/node:20.5.0  # exector, docker/window/mac/linux/ubuntu
+    steps:
+      - checkout  
+      - run: node --version 
   run_tests:
     docker:
       - image: cimg/node:20.5.0  # exector, docker/window/mac/linux/ubuntu
     steps:
-      - checkout                  # git clone <project-name>
-      - run:
+      - checkout  
+      - run: node --version                
+      - run:                      # git clone <project-name>
           name: Install npm dependencies
           command: |              # install npm dependencies and install dependencies form package.json
             npm install --save
@@ -21,4 +28,5 @@ jobs:
 workflows:
   build_test:
     jobs:
+      - build
       - run_tests
