@@ -1,1 +1,2 @@
-# circleci-learning-basic
+# nodejs-circleci
+CircleCI node.js example
