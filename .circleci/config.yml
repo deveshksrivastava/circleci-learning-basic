@@ -1,27 +1,25 @@
+# CircleCI configuration file
 version: 2.1
-
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
-  say-hello:
-    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/configuration-reference/#executor-job
+  run_tests:
     docker:
-      - image: cimg/base:stable
-    # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
+      - image: circleci/node:10  # exector, docker/window/mac/linux/ubuntu
     steps:
-      - checkout
+      - checkout                  # git clone <project-name>
       - run:
-          name: "Say hello"
-          command: "echo Hello, World!"
+          name: Install npm dependencies
+          command: |              # install npm dependencies and install dependencies form package.json
+            npm install --save
       - run:
-          name: "Bye bye"
-          command: "echo bye bye"
+          name: Run unit tests
+          command: |              # (./node_modules/mocha/bin/mocha)calling mocha,(test/) look into test folder/  (--reporter mochawesome) create nice html page,and install mochawesome,(reportDir=test-results) genrate report on folder
+            ./node_modules/mocha/bin/mocha test/ --reporter mochawesome --reporter-options reportDir=test-results,reportFilename=test-results
+      - store_test_results:
+          path: test-results
+      - store_artfacts:
+          path: test-results
 
-# Orchestrate jobs using workflows
-# See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  say-hello-workflow:
+  build_tests:
     jobs:
-      - say-hello
+      - run_tests
