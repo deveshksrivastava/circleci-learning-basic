@@ -32,7 +32,7 @@ jobs:
       - run:                      # git clone <project-name>
           name: Install npm dependencies
           command: |              # install npm dependencies and install dependencies form package.json
-            npm install --frozen-lockfile --cache-folder ~/.cache/yarn
+            yarn --frozen-lockfile --cache-folder ~/.cache/npm
       - save_cache:
           name: Save Yarn Package Cache
           key: yarn-packages-{{ checksum "yarn.lock" }}
@@ -54,7 +54,7 @@ jobs:
       - run:                      # git clone <project-name>
           name: Install npm dependencies
           command: |              # install npm dependencies and install dependencies form package.json
-            npm install --save
+            yarn --frozen-lockfile --cache-folder ~/.cache/yarn
       - run:
           name: Run unit tests
           command: |              # (./node_modules/mocha/bin/mocha)calling mocha,(test/) look into test folder/  (--reporter mochawesome) create nice html page,and install mochawesome,(reportDir=test-results) genrate report on folder
