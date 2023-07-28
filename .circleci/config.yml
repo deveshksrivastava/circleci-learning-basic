@@ -1,20 +1,21 @@
 # CircleCI configuration file
 version: 2.1
+
 commands:
   save_node_modules:
     steps:
-      save_cache:
-        name: Save Yarn Package Cache
-        paths:
-          - ~/.cache/yarn 
-        key: yarn-packages-{{ checksum "yarn.lock" }}
+      - save_cache:
+          name: Save Yarn Package Cache
+          paths:
+            - ~/.cache/yarn 
+          key: yarn-packages-{{ checksum "yarn.lock" }}
 
   restore_node_modules:
     steps:  
-      restore_cache:
-        name: Restore Yarn Package Cache
-        keys:
-          - yarn-packages-{{ checksum "yarn.lock" }}  
+      - restore_cache:
+          name: Restore Yarn Package Cache
+          keys:
+            - yarn-packages-{{ checksum "yarn.lock" }}  
 
 executors:
   node-executor:
@@ -78,7 +79,7 @@ jobs:
     steps:
       - checkout  
       - run: node --version
-       
+
 workflows:
   build_test:
     jobs:
